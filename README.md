@@ -43,7 +43,7 @@ This repository contains the platform that powers Sellout.
 
 If you want to more specifically see what tools Sellout uses, check out the `package.json` files in the different Sellout packages.
 
-## Sellout Development team shake up and moving forward.
+## Sellout Development Team Shake Up and Moving Forward
 As of right now, the current development team at Sellout is moving on to other projects and the rest of the Sellout team is looking for people to finish off the new version of the platform and push it to production. The current master branch is what currently exists in production at [app.sellout.io](https://app.sellout.io/) and the new unreleased version exists on the branch `feature/lerna`. There are several things that need to happen before this branch can be pushed to production for Sellout users to use. They include but are not limited to:
 - Publish the reskinned ticket scanning app in the IOS and Play store.
 - Provide a frontend for refund metrics and functionality.
