@@ -1,36 +1,49 @@
-# Sellout Platform 
-
-This repository contains the platform that powers Sellout. 
+# Sellout Public General Documentation
 
 ## General Tech Stack and Tools
 - React
+  - React is a frontend library that Sellout uses to help build UI's and components in both the Backstage and Purchase-portal packages. Sellout uses React with Typescript to creat TSX components with typed props, state, variables, etc.
+- Create-react-app
+  - Create-react-app is a toolchain created by Facebook that assists Sellout in bootstrapping react apps to more quickly and easily get to the app development. It handles webpack configurations and provide optimizations for production builds. Create-react-app is used by both Backstage and Purchase-portal, however, purchase-portal was ejected from create-react-app to gain access to the webpack config file and make changes to inject the iframe it exists in into other websites.
 - React-Native
+  - React Native is a JavaScript framework similar to React that is used for writing real, natively rendered mobile applications for both iOS and Android. Sellout uses React Native with Javascript. The plan was to migrate to Typescript in the future but that goal was never reached. React Native is only used by Sellout in the Ticket-Scanning app that allows event staff to scan QR codes and admit event attendants.
 - Styled Components
-- Protobuf
-- Google Cloud
-- Docker
-- Kubernetes
-- Protobuf
-- MongoDB
-- NodeJS
+  - Sellout uses Styled Components to write CSS in .tsx files in a CSS-In-TS manner to more succinctly create beautiful components.
+- MJML
+  - MJML is a Node library used for creating stylized emails. It handles a lot of the variability in different screen sizes and is much easier to write than just plain css and html. When it is built, the MJML code is transpiled into html and css which is what is rendered in an email client. We also use a package called handlebars to inject variables into each email when they are created and sent.
+- Sendgrid
+  - Sendgrid is Sellout's email delivery service. Sellout sends the email html to Sendgrid and Sendgrid handles the distribution. Their are several other more minor toosl Sellouts uses in conjunction with MJML and Sendgrid to handle emails, all of which can be seen in the `email` microservice.
 - Full stack Typescript
+  - Sellout uses
 - Apollo GraphQL
 - Stripe
 - Twilio/Plivo
-- Sendgrid
 - IPstack
 - NPM
 - Mapbox
 - Lerna
+  - Lerna is monorepo management tools and enables Sellout to more effectively manage each package that the system consists of. It enables command to be run in every package and provides the ability to write scripts for things such as publishing the `common` code to NPM and updating the package version in every package that uses them.
+- Sentry
+- Intercom
+  - Intercom is a tool that Sellout uses in Backstage and on the marketing site. It is a saas platform that allows customers to directly contact Sellout's customer support team through their web browser without leaving the Sellout app.
+- Redux
+  - Sellout uses Redux for client side caching and global state in both Purchase-portal and Backstage.
+- Redux-Saga
+- JWT
+  - Sellout currently uses a simple JWT authentication for logins where the JWT's are stored in the client's local storage and are used to authenticate and identify each request to the backend. There is currently no expiration time for the tokens and we have an auto login feature set up if the JWT in local storage is legitimate. The userId and organizationId are also stored in the token if they are required.
+- MongoDB
+- NodeJS
+- Protobuf
+- Google Cloud
+- Docker
+  - Docker is used by Sellout to containerize the different packages when running in the kubernetes clusters in the prod or staging enviornments.
+- Kubernetes
+  - Kubernetes is used with Google Cloud and their kubernetes engine for cluster management in the prod and staging environments.
+- Protobuf
 - Nginx
 - Helm
 - Micro-services
 - Nats
-- Sentry
-- Intercom
-- Redux
-- Redux-Saga
-- JWT
 - ElasticSearch
 - Logstash
 - Kibana
@@ -39,7 +52,7 @@ This repository contains the platform that powers Sellout.
 - Jaegar
 - Segment
 - Google Analytics
-- MJML
+
 
 If you want to more specifically see what tools Sellout uses, check out the `package.json` files in the different Sellout packages.
 
