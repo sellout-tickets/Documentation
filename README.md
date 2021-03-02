@@ -14,36 +14,68 @@
 - Sendgrid
   - Sendgrid is Sellout's email delivery service. Sellout sends the email html to Sendgrid and Sendgrid handles the distribution. Their are several other more minor toosl Sellouts uses in conjunction with MJML and Sendgrid to handle emails, all of which can be seen in the `email` microservice.
 - Full stack Typescript
-  - Sellout uses
+  - Sellout uses Typescript on both the front and back end. This enables code to be shared by all packages and is easier to write when switching between the front and back end frequently. The shared code exists in the `common` directory and consists of enums, utility functions, graphql queries, components, interfaces, types, models, etc.
 - Apollo GraphQL
+  - Apollo Graphql is used to efficiently write and handle queries and mutations for CRUD operations in the Sellout platform. Apollo caching is used on the front end to prevent unneccessary data reloads and the backend supports querying different data models all at once. Graphql was chosen as it avoids a lot of the common pitfalls with regular REST APIS.
+- ExpressJS
+  - ExpressJS (but in Typescript) is the web framework used by the Sellout platform to handle http requests. It is initialized on the backend in the `server.ts` file located in `graphql/src/`.
 - Stripe
+  - Stripe is the payment processer used by Sellout to handle payment functions such as card charges, refunds, client bank transfers, etc. When a promoter creates a Sellout Backstage organization. They need to connect their Stripe account so that they can accept payment from the people buying tickets to their events. This is done with Stripe Connect. Sellout previously used the `Stripe Charges API` to accept payment but has since moved to the `Stripe Payment Intents API`. To keep up with newer regulations. The refunds integration still needs to be written to support both a charge refund and payment intent refund. Stripe terminal is also used to accept payment from a physical card at the box office and send the data to the Sellout platform.
 - Twilio/Plivo
-- IPstack
-- NPM
+  - Twilio is the current texting integration for authentication purposes in the Sellout v2 platform. However, Sellout switched to Plivo in the new version as it was cheaper and allowed for more flexibility in what was sent. The plan now, is to use Plivo for marketing texts, QR code texts, event reminders, etc, and switch to Firebase texts for authentication in Purchase-portal checkout and Backstage account creation. Firebase allows for 10,000 free texts a month, adds a recaptcha for added security, and does not rate limit as bad. The Plivo integration should be completed for the upcoming release but the Firebase authentication is not fully finished. A working, but not cleaned up, version is present within the `feature/firebase-phone-auth` branch. It ws not built in the traditional Firebase way, so pay attention to what API's are being called and how things are being stored.
 - Mapbox
+  - Mapbox is used in backstage to provide a cool visualization heat map for where ticket buyers are purchasing their tickets based off of IP addresses fed into GeoJSON data
+- IPstack
+  - IPStack is used in the Purchase-portal to record the IP addresses of where people are buying tickets from. This data is then used to populate the heatmap and is stored for other analytics.
+- D3
+  - D3 is an SVG rendering library that Sellout uses to create complex and interactive custom analytics graphs for ticket sale metrics in the Backstage frontend.
+- NPM
+  - NPM is the package manager for Node used in every Sellout package to handle installations and versioning of open-source and third-party tools. Sellout also maintains its own NPM packages, the code in `common` to easily publish, install, and share in-house code with every Sellout package.
 - Lerna
   - Lerna is monorepo management tools and enables Sellout to more effectively manage each package that the system consists of. It enables command to be run in every package and provides the ability to write scripts for things such as publishing the `common` code to NPM and updating the package version in every package that uses them.
 - Sentry
+  Sentry is used is record crash analytics and other server analytics in production and staging environments.
 - Intercom
   - Intercom is a tool that Sellout uses in Backstage and on the marketing site. It is a saas platform that allows customers to directly contact Sellout's customer support team through their web browser without leaving the Sellout app.
 - Redux
   - Sellout uses Redux for client side caching and global state in both Purchase-portal and Backstage.
 - Redux-Saga
+  - Redux-Saga is a library used in conjuction with Redux that aims to make application side effects (i.e. asynchronous things like data fetching and impure things like accessing the browser cache) easier to manage, more efficient to execute, easy to test, and better at handling failures. Sellout uses Redux-Saga in both Backstage and Purchase-portal.
 - JWT
   - Sellout currently uses a simple JWT authentication for logins where the JWT's are stored in the client's local storage and are used to authenticate and identify each request to the backend. There is currently no expiration time for the tokens and we have an auto login feature set up if the JWT in local storage is legitimate. The userId and organizationId are also stored in the token if they are required.
 - MongoDB
+  - MongoDB is the NoSQL database used by Sellout to store all of the documents required for the Sellout platform. The main data models are:
+    - Artist: Stored data for artists created in Backstage.
+    - Event: Stored data for events created in the Backstage event creator.
+    - Fee: Stored fee data set by event promoters and Sellout. Used to determine what to charge customers.
+    - Order: Stored data for each order placed through the Sellout platform.
+    - Organization: Stored info for organizations created in backstage
+    - Role: The role and permission level data for members of a backstage organization.
+    - Seating: Stored seating data for charts created with the SeatsIO integration.
+    - User: Stored data for all users on the sellout platform, event promoter, event staff, or ticket buyer.
+    - Venue: Stored data for venues created in Backstage.
+    - WebFlow: Info for client's webflow site integrations.
+    - UserProfile: A mix between the user and organization.
+    - Task: Sellout has a task system, kind of like a cron job, that runs every 30 seconds and executes any tasks that needs to be executed at that time such as sending out QR codes. The data on task type and when to execute is stored here.
+- Mongoose
+  - Mongoose is the Node MongoDB client that Sellout uses to facilitate CRUD operations with the database as well as create and initialize the database schemas in the correct format.
 - NodeJS
+  - Sellout API's and infrastructure is written in NodeJS with Typescript.
 - Protobuf
+  - Protobuffers are extremely lightweight (smaller than JSON and XML) and perfect for transporting messages between services. Sellout uses them for internal communcation via NATS, a message-bus similar to Kafka, to allow the microservices in the platform to quickly and efficiently communicate.
+- NATS
+  - NATS is used to send messages between each microservice in the Sellout platform.
 - Google Cloud
+  - Google cloud is the cloud ocmputing solution used for building and hosting the different Sellout environments. Things like the Cloud Build, Kubernetes engine, metrics, etc. are all utilized.
 - Docker
   - Docker is used by Sellout to containerize the different packages when running in the kubernetes clusters in the prod or staging enviornments.
 - Kubernetes
   - Kubernetes is used with Google Cloud and their kubernetes engine for cluster management in the prod and staging environments.
-- Protobuf
+
+
 - Nginx
 - Helm
 - Micro-services
-- Nats
 - ElasticSearch
 - Logstash
 - Kibana
@@ -52,7 +84,6 @@
 - Jaegar
 - Segment
 - Google Analytics
-
 
 If you want to more specifically see what tools Sellout uses, check out the `package.json` files in the different Sellout packages.
 
@@ -165,7 +196,7 @@ ElasticSearch, Logstash, and Kibana make up the ELK stack, a solution to distrib
 #### Segment
 [Segment](https://segment.com/) is analytics gathering platform that allows the tracking of customer actions and transportation of data to around 50 different analysis tools. Segment allows us to track a customers journey through our application, from first page load to checkout and everything in between. The promoters we work with will likely have a preferred method of analyzing customer data, and using Segment allows us to transport their users data to whichever platform they specify. We will also want to analyze user data, and Segment allows us to pick, choose, and change our analysis platform without having to worry about changing how we track user in the application. Segment does all the necessary transformations before transporting data to an analysis tool. Segment is a granular user analytics tool.
 
-#### Sntry
+#### Sentry
 [Sentry](https://sentry.io) provides us with a way to see crash reports in the production and staging environments as well as analytics on the crash. We have set up a Slack bot that alerts us when there are crashes in produciton.
 
 #### Google Analytics
@@ -183,3 +214,8 @@ The mobile client is built using [React Native](https://facebook.github.io/react
 
 ### Marketing site and event hosting
 The marketing site and event hosting is done via a Webflow site. We have aWwebflow integration built to be able to push a JSON object to webflow that can then be rendered accordingly for customers to click on and pop up the purchase portal.
+
+## Other Notes
+The Sellout production Backstage environment lives at https://app.sellout.io/ and Purchase-portal lives at https://embed.sellout.io/?eventId=theeventid
+The Sellout staging Backstage environment lives at https://app.sellout.cool/ and Purchase-portal lives at https://embed.sellout.cool/?eventId=theeventid
+
