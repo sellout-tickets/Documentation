@@ -182,6 +182,7 @@ The marketing site and event hosting is done via a Webflow site. We have aWwebfl
 
 ## Other Notes
 The Sellout production Backstage environment lives at https://app.sellout.io/ and Purchase-portal lives at https://embed.sellout.io/?eventId=theeventid
+
 The Sellout staging Backstage environment lives at https://app.sellout.cool/ and Purchase-portal lives at https://embed.sellout.cool/?eventId=theeventid
 
 It might be easier to deploy and observe the platform in another, more simple way, depending on what the next devs have experience with.
