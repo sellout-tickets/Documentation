@@ -24,7 +24,7 @@
 - Twilio/Plivo
   - Twilio is the current texting integration for authentication purposes in the Sellout v2 platform. However, Sellout switched to Plivo in the new version as it was cheaper and allowed for more flexibility in what was sent. The plan now, is to use Plivo for marketing texts, QR code texts, event reminders, etc, and switch to Firebase texts for authentication in Purchase-portal checkout and Backstage account creation. Firebase allows for 10,000 free texts a month, adds a recaptcha for added security, and does not rate limit as bad. The Plivo integration should be completed for the upcoming release but the Firebase authentication is not fully finished. A working, but not cleaned up, version is present within the `feature/firebase-phone-auth` branch. It ws not built in the traditional Firebase way, so pay attention to what API's are being called and how things are being stored.
 - Mapbox
-  - Mapbox is used in backstage to provide a cool visualization heat map for where ticket buyers are purchasing their tickets based off of IP addresses fed into GeoJSON data
+  - Mapbox is used in backstage to provide a cool visualization heat map for where ticket buyers are purchasing their tickets based off of IP addresses fed into GeoJSON data.
 - IPstack
   - IPStack is used in the Purchase-portal to record the IP addresses of where people are buying tickets from. This data is then used to populate the heatmap and is stored for other analytics.
 - D3
@@ -33,12 +33,10 @@
   - NPM is the package manager for Node used in every Sellout package to handle installations and versioning of open-source and third-party tools. Sellout also maintains its own NPM packages, the code in `common` to easily publish, install, and share in-house code with every Sellout package.
 - Lerna
   - Lerna is monorepo management tools and enables Sellout to more effectively manage each package that the system consists of. It enables command to be run in every package and provides the ability to write scripts for things such as publishing the `common` code to NPM and updating the package version in every package that uses them.
-- Sentry
-  Sentry is used is record crash analytics and other server analytics in production and staging environments.
 - Intercom
   - Intercom is a tool that Sellout uses in Backstage and on the marketing site. It is a saas platform that allows customers to directly contact Sellout's customer support team through their web browser without leaving the Sellout app.
 - Redux
-  - Sellout uses Redux for client side caching and global state in both Purchase-portal and Backstage.
+  - Sellout uses Redux for client side caching and global state management in both Purchase-portal and Backstage.
 - Redux-Saga
   - Redux-Saga is a library used in conjuction with Redux that aims to make application side effects (i.e. asynchronous things like data fetching and impure things like accessing the browser cache) easier to manage, more efficient to execute, easy to test, and better at handling failures. Sellout uses Redux-Saga in both Backstage and Purchase-portal.
 - JWT
@@ -66,26 +64,27 @@
 - NATS
   - NATS is used to send messages between each microservice in the Sellout platform.
 - Google Cloud
-  - Google cloud is the cloud ocmputing solution used for building and hosting the different Sellout environments. Things like the Cloud Build, Kubernetes engine, metrics, etc. are all utilized.
+  - Google cloud is the cloud computing solution used for building and hosting the different Sellout environments. Things like the Cloud Build, Kubernetes engine, Analytics, etc. are all utilized.
 - Docker
-  - Docker is used by Sellout to containerize the different packages when running in the kubernetes clusters in the prod or staging enviornments.
+  - Each of the packages in the Sellout system runs its own Docker container. When changes are made to a package and pushed, the package is containerized and uploaded to Google Cloud Registry for storage. It is then deployed to Kubernetes via Helm. Each version of the containers is kept long-term as an artifact, allowing Sellout to rollback to specific versions of each service if necessary.
 - Kubernetes
-  - Kubernetes is used with Google Cloud and their kubernetes engine for cluster management in the prod and staging environments.
-
-
+  - Kubernetes is production-grade container orchestration. Kubernetes facilitates the networking of multiple computers into a computer cluster, allowing Sellout to run many computers in parallel. Kubernetes defines a set of usable abstractions to make scaling software applications vertically and horizontally in the cloud easy. Kubernetes and Docker work hand in hand. Docker abstracts the runtime environment of the application and Kubernetes abstracts the physical compute power and networking protocols required to run the Docker container. Each service in the system uses Kubernetes application, networking, and storage abstractions to run and communicate with other parts of the system.
 - Nginx
+  - Nginx is used as the web server and handles things such as load balancing.
 - Helm
-- Micro-services
-- ElasticSearch
-- Logstash
-- Kibana
+  - Helm is the Kubernetes package manager. Sellout uses Helm to facillitate the packaging of application components into Helm Charts, which can be deployed to Kubernetes with a single command. A Helm Chart contains everything Kubernetes needs to run a single service, including information on the Docker container to run, how it should be run, and what other services are relied on. Each service has it's own Helm Chart.
+- Sentry
+  - Sentry provides Sellout with a way to see crash reports in the production and staging environments as well as analytics on the crash such as IP address, browser type, error message, etc. Sellout also has a Slack bot that sends an alert when there are crashes in production
 - Prometheus
+  - Prometheus allows Sellout to collect metrics on CPU usage and memory utilization on a per container basis to ensure the hardware for an application is performing correctly.
 - Grafana
+  - Grafana is a time-series visualization tool that works with Prometheus to make the gathered metrics easy to interpret. 
 - Jaegar
-- Segment
-- Google Analytics
+  - Tracing allows developers to track a request all the way through the system from start to finish and measure how each subcomponent of the system behaves. Distributed architectures add the complexity of tracing requests between processes boundaries. To solve this, Sellout uses [Jaeger](https://www.jaegertracing.io/). Jaeger facilitates transaction monitoring, the measurement of several types of latency, and the tracking of requests between services, all in real-time. Jaeger comes with a monitoring UI to easily interpret the gathered data. Each service implements Jaeger tracing protocols via the Jaeger client, which simply means that when services make or receive requests, they will include context information that will be reported to the Jaeger backend.
+- ELK stack logging
+  - ElasticSearch, Logstash, and Kibana make up the ELK stack, a solution to distributed log aggregation, storage, and search.
 
-If you want to more specifically see what tools Sellout uses, check out the `package.json` files in the different Sellout packages.
+If you want to more specifically see what tools Sellout uses in a technical way, check out the `package.json` files in the different Sellout packages and see how they are used.
 
 ## Sellout Development Team Shake Up and Moving Forward
 As of right now, the current development team at Sellout is moving on to other projects and the rest of the Sellout team is looking for people to finish off the new version of the platform and push it to production. The current master branch is what currently exists in production at [app.sellout.io](https://app.sellout.io/) and the new unreleased version exists on the branch `feature/lerna`. There are several things that need to happen before this branch can be pushed to production for Sellout users to use. They include but are not limited to:
@@ -110,7 +109,7 @@ Other Items that may not be needed to release but will still be probably needed 
 
 We also maintain a [Notion](https://www.notion.so/) board with more detailed and specific items of what is left to do before this new platform can be released.
 
-## Repository Structure
+## Organization Repositories
 
 The `SelloutPlatform` repository contains most of the front and backend code and uses [Lerna](https://github.com/lerna/lerna) to make the management of every package easier within this single repository. This is the repository that contains the `feature/lerna` branch.
 
@@ -118,15 +117,16 @@ The `SelloutPromoterMobile` repository contains the React-Native code that allow
 
 The `SelloutOps` repository contains the code responsible for observability and deployment. There is a build trigger that gets run when pushing to the SelloutPlatform that updates the live staging environment but to push to production, you will have to manually update the `image-tags.yaml` file with the correct commit hash.
 
-The other repositories are either deprecated or serve some other function such as educating people.
+The other repositories are either deprecated or serve some other function not directly tied to an application.
 
 
 ## Getting Started
 
-You must have NPM, NodeJS, and Lerna installed to run the Sellout system. Follow the steps below:
+You must have NPM, NodeJS, and Lerna installed to run the Sellout system. Follow the steps below to get started
 
-1. Acquire all of the required permissions and install all of the needed dependencies.
-2. Create the required directory structure, install and link service dependencies with:
+1. Acquire all of the needed permissions and install the above dependencies.
+  - You will need access to things such as google cloud, API keys, and secrets.
+3. Create the required directory structure, install and link service dependencies with:
    ```
    $ cd $SELLOUT_SRC/SelloutPlatform && lerna bootstrap
    ```
@@ -134,10 +134,13 @@ You must have NPM, NodeJS, and Lerna installed to run the Sellout system. Follow
    ```
    $ make start
    ```
+   or, if you just want to run things locally and not use kubectl to port forward to the staging clusters, run
+   
+   ```
+   $ make start-local
+   ```
 
-This last command will start both the web clients and the the micro services. After a minute or so, the platform should be fully running. There are also several other commands in the `Makefile` that perform various tasks such as running against a local databse or restarting the deployment clusters. Everything should work on both MacOS and Ubuntu. There may be additonal configuration required if not using either of these OS's.
-
-The only entrypoint into the system is a single GraphQL endpoint that lives at http://localhost:4000/graphql. Viewing this link will bring up the GraphQL playground and allow you to see the available GraphQL calls.
+This last command will start the web clients, the microservices, and build the `common` packages as well as watch for changes when they are made. After a minute or so, the platform should be fully running. There are also several other commands in the `Makefile` that perform various tasks such as cluster scaling or connecting to a clustered Mongo instance. Everything should work on both MacOS and Ubuntu. There may be additonal configuration required if not using either of these OS's.
 
 ## Common
 
@@ -146,7 +149,6 @@ The platform shares a decent amount of code and this code is all located in the 
 ### Publishing common
 
 When the files in the common directory are updated, you must publish these changes before you push your changes to GitHub. In order to do this, commit your existing changes, but do not push them. In the root the `SelloutPlatform` directory, run `lerna publish`. This will publish the changes made to common to NPM and will update all the services with the new version. This will auotmatically trigger a a commit and push the commits to github with the updated version.
-
 
 ## System Architecture
 
@@ -161,61 +163,26 @@ Services communicate externally via GraphQL. This is the client application's en
 #### Scaling
 Scaling is a first class citizen in this system. The two primary scaling techniques used are Pod Autoscaling and Cluster Autoscaling. Pod Autoscaling facilitates the automatic deployment of additional Kuberentes Pods when the existing pods are above maximum capacity. Cluster Autoscaling comes in once the entire system is under maximum capacity and there are no resources to allocate new Pods. Cluster Autoscaling solves this problem by adding new nodes (computers) to the cluster, thus raising the total amount of compute power available. Cluster Autoscaling can also save money by remove nodes from the cluster when they are no longer needed.
 
-## System Operation
 
-#### Google Cloud Platform
-This system runs on the google cloud platform and uses cloud build to facilitate deployments.
+## Packages
 
-#### Docker
-[Docker](https://www.docker.com/) is the industry standard in software application containerization technology. At its core, it is lightweight virtualization technology. A Docker container encapsulates a single application and its dependencies providing seperation from the operating and file systems. A container can be run nearly anywhere without having to worry about the underlying system architecture. Docker is easy to use, has a very active community, is contributed to by some of the largest technology companies in the world, and has first-class orchestration support via Kubernetes. Each of the services in this system will run inside its own Docker container. When changes are made to a service, the service will be containerized, and uploaded to Google Cloud Registry for storage. When a container has been thoroughly tested, it will be deployed to Kubernetes via Helm. Each version of the container is kept long-term as an artifact, allowing us to rollback to specific versions of each service if necessary. 
-
-#### Kubernetes
-[Kubernetes](https://kubernetes.io/) is production-grade container orchestration. Kubernetes facilitates the networking of multiple computers into a computer cluster, allowing us to run many of computers in parallel. Kubernetes defines a set of usable abstractions to make scaling software applications vertically and horizontally in the cloud easy. Kubernetes and Docker work hand in hand. Docker abstracts the runtime environment of the application and Kubernetes abstracts the physical compute power and networking protocols required to run the Docker container. Each service in the system will use Kubernetes application, networking, and storage abstractions to run and communicate with other parts of the system.
-
-#### Helm
-[Helm](https://helm.sh/) is the Kubernetes package manager. Helm facilitates the packaging of application components into Helm Charts, which can be deployed to Kubernetes with a single command. A Helm Chart contains everything Kubernetes needs to run a single service, including information on the Docker container to run, how it should be run, and what other services are relied on. Each service will have its own Helm Chart, and because Helm Charts are composable, it is possible to deploy our entire system with a single command.
-
-
-## Security
-
-#### Internal Security
-TLS Certificates to connect to NATS server. Limited access to VPC.
-
-#### Distributed Tracing with Jaeger
-Tracing allows developers to track a request all the way through the system from start to finish and measure how each subcomponent of the system behaves. Distributed architectures add the complexity of tracing requests between processes boundaries. To solve this, we use [Jaeger](https://www.jaegertracing.io/). Jaeger facilitates transaction monitoring, the measurement of several types of latency, and the tracking of requests between services, all in real-time. Jaeger comes with a monitoring UI to easily interpret the gathered data. The Jaeger backend will run as a service in our system and aggregate the information gathered by other services. Each service will implement Jaeger tracing protocols via the Jaeger client, which simply means that when services make or receive requests, they will include context information that will be reported to the Jaeger backend. 
-
-#### Application Metrics with Prometheus and Grafana
-In addition to tracing, it is important to have insight into the amount of stress your system is placing on the hardware it is running on. [Prometheus](https://prometheus.io/) allows us to collect metrics on CPU usage and memory utilization on a per container basis to ensure our hardware is application is performing correctly. [Grafana](https://grafana.com/) is a time-series visualization tool that works with Prometheus to make the gathered metrics easy to interpret. 
-
-#### Distributed logging with ELK
-ElasticSearch, Logstash, and Kibana make up the ELK stack, a solution to distributed log aggregation, storage, and search. [Logz.io](https://logz.io/) has a hosted version of the ELK stack with anomaly detection and other security mechanisms.
-
-
-## Analytics
-
-#### Segment
-[Segment](https://segment.com/) is analytics gathering platform that allows the tracking of customer actions and transportation of data to around 50 different analysis tools. Segment allows us to track a customers journey through our application, from first page load to checkout and everything in between. The promoters we work with will likely have a preferred method of analyzing customer data, and using Segment allows us to transport their users data to whichever platform they specify. We will also want to analyze user data, and Segment allows us to pick, choose, and change our analysis platform without having to worry about changing how we track user in the application. Segment does all the necessary transformations before transporting data to an analysis tool. Segment is a granular user analytics tool.
-
-#### Sentry
-[Sentry](https://sentry.io) provides us with a way to see crash reports in the production and staging environments as well as analytics on the crash. We have set up a Slack bot that alerts us when there are crashes in produciton.
-
-#### Google Analytics
-[Google Analytics](https://analytics.google.com/analytics)(GA) facilitates the tracking of many important metrics and provides a high level view of how our application is being used. Promoters may also want to upload their own GA tracking code to track how their advertisements are performing.
-
-## Clients
-### Backstage
+#### Backstage
 Backstage is the web client for promoters and event staff to create and manage events.
 
 #### Purchase-portal
 Purchase Portal is how customers can purchase tickets to an event. We use an Iframe to be able to embed this site into any other site so promoters can have a 'Buy Tickets' button that never redirects customers off of the promoter website.
 
-### Mobile Client
+#### Mobile Client
 The mobile client is built using [React Native](https://facebook.github.io/react-native/) with Javascript and functions as a way to allow event staff to stan QR codes on tickets to admit people into the event.
 
-### Marketing site and event hosting
+#### Marketing site and event hosting
 The marketing site and event hosting is done via a Webflow site. We have aWwebflow integration built to be able to push a JSON object to webflow that can then be rendered accordingly for customers to click on and pop up the purchase portal.
+
+#### TODO: provide brief description on all other packages in `SelloutPlatform`.
 
 ## Other Notes
 The Sellout production Backstage environment lives at https://app.sellout.io/ and Purchase-portal lives at https://embed.sellout.io/?eventId=theeventid
 The Sellout staging Backstage environment lives at https://app.sellout.cool/ and Purchase-portal lives at https://embed.sellout.cool/?eventId=theeventid
+
+It might be easier to deploy and observe the platform in another, more simple way, depending on what the next devs have experience with.
 
