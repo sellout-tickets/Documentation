@@ -176,9 +176,54 @@ Purchase Portal is how customers can purchase tickets to an event. We use an Ifr
 The mobile client is built using [React Native](https://facebook.github.io/react-native/) with Javascript and functions as a way to allow event staff to stan QR codes on tickets to admit people into the event.
 
 #### Marketing site and event hosting
-The marketing site and event hosting is done via a Webflow site. We have aWwebflow integration built to be able to push a JSON object to webflow that can then be rendered accordingly for customers to click on and pop up the purchase portal.
+The marketing site and event hosting is done via a Webflow site. We have a Wwebflow integration built to be able to push a JSON object to webflow that can then be rendered accordingly for customers to click on and pop up the purchase portal.
 
-#### TODO: provide brief description on all other packages in `SelloutPlatform`.
+## Packages in the `SelloutPlatform` repo on the on the `feature/lerna` branch
+
+#### backstage
+This folder contains the Reactjs code for the backstage application that event managers and promoters use to create events. It is our biggest front end application.
+
+#### common
+This directory contains the four packages `models`, `service`, `ui`, and `utils`. This is the code that is shared between all of our different applications and can be installed via NPM.
+
+#### deploy
+This folder is deprecated and can probably be deleted. DevOps stuff is now handled is the `SelloutOps` repository.
+
+#### email
+This directory handles all the logic around sending the different emails like ticket confirmations or qr codes. It also contains the MJML templates which are the templates that are responsible for the design of the email itself.
+
+#### file-upload
+This module handles the fild-upload logic for storing files on Google cloud. Currently, the only items uploaded are images such as QR codes, Event posters, venue posters, etc.
+
+#### graphql
+This folder contains the main `server.ts` file that starts the Expressjs server and applies the required middleware. It also contains the GraphQL schema in `schema.ts` which defines the types and behavior of API requests. The GraphQL resolvers for each microservice are also stored here where they provide an callable endpoint with security checks.
+
+#### plivo
+This directory is responsible for interacting with Plivo. Plivo is a company/tool that we planned on using for text message marketing and ticket sending.
+
+#### purchase-portal
+This directory contains the embeddable iframe that is used at the box office and on Promoter/Sellout websites to facilitate the purchasing of event tickets.
+
+#### scripts
+This folder is deprecated and can probably be deleted. Lerna handles most of our scripting requirements.
+
+#### seating
+This directory is responsible for interacting with SeatsIO as well as the seating logic and the storing of seating information for a venue. SeatsIO is a platform that provides a GUI for 'easily' creating sophisticated seating charts that users can select and reserve when purchasing tickets.
+
+#### stripe
+The Stripe module is used for processing payments from users into the bank accounts of Sellout and the promoters who promote on Sellout. It is also used for refunds, and PoS stuff.
+
+#### task-queue
+The task system in Sellout runs every 10 seconds and checks the stored task 'todos' to see if any of them need to be executed. This is stuff such as delayed ticket sending. The task system can be used to automatically execute any future processes and does not require any user interaction.
+
+#### tools
+This folder is mostly deprecated but contained some code needed to do a backfill on the database as well as automatically run some load testing by creating thousands of orders a second via a script.
+
+#### web-flow
+The current Sellout event hosting site where people go to click on events and buy tickets was created with web-flow and is hosted on their platform. This is where the event JSON object is pushed to webflow in order to render it correctly on the website. The plan was to eventually get rid of the web-flow integration and build custom react sites for better SEO and customization.
+
+#### event, fee, artist, order, organization, user-profile, user, venue, role
+These directories contain the code that handles the interactions with the corresponding data models as well as the business logic based around each item. For example, `event` handles all CRUD operations revolving around events. `EventService.ts` is responsible for the bulk of the business logic and interactions with the rest of the app while `EventStore.ts` is used to directly interact with the database through mongoose.
 
 ## Other Notes
 The Sellout production Backstage environment lives at https://app.sellout.io/ and Purchase-portal lives at https://embed.sellout.io/?eventId=theeventid
