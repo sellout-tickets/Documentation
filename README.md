@@ -195,16 +195,16 @@ This folder contains the Reactjs code for the backstage application that event m
 This directory contains the four packages `models`, `service`, `ui`, and `utils`. This is the code that is shared between all of our different applications and can be installed via NPM.
 
 #### deploy
-This folder is deprecated and can probably be deleted. DevOps stuff is now handled is the `SelloutOps` repository.
+This folder is deprecated and can probably be deleted. DevOps stuff is now handled in the `SelloutOps` repository.
 
 #### email
-This directory handles all the logic around sending the different emails like ticket confirmations or qr codes. It also contains the MJML templates which are the templates that are responsible for the design of the email itself.
+This directory handles all the logic around sending the different emails such as ticket confirmations or qr codes. It also contains the MJML templates which are the templates that are responsible for the design of the email itself.
 
 #### file-upload
-This module handles the fild-upload logic for storing files on Google cloud. Currently, the only items uploaded are images such as QR codes, Event posters, venue posters, etc.
+This module handles the file-upload logic for storing files on Google cloud. Currently, the only items uploaded are images such as QR codes, Event posters, venue posters, etc.
 
 #### graphql
-This folder contains the main `server.ts` file that starts the Expressjs server and applies the required middleware. It also contains the GraphQL schema in `schema.ts` which defines the types and behavior of API requests. The GraphQL resolvers for each microservice are also stored here where they provide an callable endpoint with security checks.
+This folder contains the main `server.ts` file that starts the Expressjs server and applies the required middleware. It also contains the GraphQL schema in `schema.ts` which defines the types and behavior of API requests. The GraphQL resolvers for each microservice are also stored here where they provide a callable endpoint with security checks.
 
 #### plivo
 This directory is responsible for interacting with Plivo. Plivo is a company/tool that we planned on using for text message marketing and ticket sending.
@@ -222,10 +222,10 @@ This directory is responsible for interacting with SeatsIO as well as the seatin
 The Stripe module is used for processing payments from users into the bank accounts of Sellout and the promoters who promote on Sellout. It is also used for refunds, and PoS stuff.
 
 #### task-queue
-The task system in Sellout runs every 10 seconds and checks the stored task 'todos' to see if any of them need to be executed. This is stuff such as delayed ticket sending. The task system can be used to automatically execute any future processes and does not require any user interaction.
+The task system in Sellout runs every 10 seconds and checks the stored task 'todos' to see if any of them need to be executed. This is stuff such as delayed ticket sending. The task system can be used to automatically execute any future processes and do not require user interaction.
 
 #### tools
-This folder is mostly deprecated but contained some code needed to do a backfill on the database as well as automatically run some load testing by creating thousands of orders a second via a script.
+This folder is deprecated but contained some code needed to backfill the database as well as automatically run some load testing by creating thousands of orders a second via a script.
 
 #### web-flow
 The current Sellout event hosting site where people go to click on events and buy tickets was created with web-flow and is hosted on their platform. This is where the event JSON object is pushed to webflow in order to render it correctly on the website. The plan was to eventually get rid of the web-flow integration and build custom react sites for better SEO and customization.
