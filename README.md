@@ -109,6 +109,14 @@ Other Items that may not be needed to release but will still be probably needed 
 
 We also maintain a [Notion](https://www.notion.so/) board with more detailed and specific items of what is left to do before this new platform can be released.
 
+#### Differences between the current production app (V1) and the new version (V2)
+  - V2 is a monorepo while V1 is not. V2 contains the frontend code in `backstage` and `purchase-portal` inside the repo `SelloutPlatform` while the V1 frontend code is in the separate repositories: `SelloutUserUI`, `SelloutAdminUI`, and `SelloutCheckoutUI`. `backtage` is the new equivalent of `SelloutAdminUI`, `purchase-portal` is the new equivalent of `SelloutCheckoutUI`, and `SelloutUserUI` currently does not have anything similar in the new version. It was a simple user web app that allowed people to view their tickets.
+  - All of the frontend code in the above mentioned V1 repos is deprecated and not in use in the new platform. While there are a lot of changes in the API code, a lot of the same code is still in use in the new version.
+  - The frontends for V1 were mostly written in class-component javascript React while in V2 everything is written with react-hooks, functional components, and Typescript.
+  - The design in the new version is very different from the design in the old version.
+  - `Stripe Payment-Intents` are used to process payment in V2 while `Stripe Charges`, a deprecated API, is used in V1.
+  - V2 uses Redux and superior caching methods in `backstage` while `SelloutAdminUI` uses the Apollo Client Cache.
+
 ## Organization Repositories
 
 The `SelloutPlatform` repository contains most of the front and backend code and uses [Lerna](https://github.com/lerna/lerna) to make the management of every package easier within this single repository. This is the repository that contains the `feature/lerna` branch.
